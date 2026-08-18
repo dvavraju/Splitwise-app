@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
-import { Camera, Plus, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
+import { Camera, ImageUp, Plus, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { usePeople, addExpense } from '../db/hooks';
 import { computeSplit, roundShares } from '../lib/splitEngine';
 import { fileToBase64, parseBillImage, BillParseError, type ParsedBillItem } from '../lib/billParser';
@@ -122,19 +122,33 @@ export default function AddExpenseBill() {
             <Camera size={28} />
           </div>
           <p className="text-sm text-slate-500">Take a photo or upload an image of the bill.</p>
-          <label className="cursor-pointer rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white">
-            Choose photo
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleFile(file);
-              }}
-            />
-          </label>
+          <div className="flex w-full flex-col gap-3">
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white">
+              <Camera size={16} /> Take Photo
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFile(file);
+                }}
+              />
+            </label>
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700">
+              <ImageUp size={16} /> Upload Image
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFile(file);
+                }}
+              />
+            </label>
+          </div>
         </div>
       )}
 
