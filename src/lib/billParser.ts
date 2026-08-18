@@ -27,6 +27,10 @@ no prose, no markdown fences, in this exact shape:
   "total": number
 }
 
+"amount" is the line's total price exactly as printed on the bill. If a quantity
+greater than 1 is shown next to an item (e.g. "3 Lassi Mango"), the printed price
+is already that line's total — do NOT multiply it by the quantity again.
+
 Categorization rules:
 - "alcohol": beer, wine, spirits, cocktails, any alcoholic beverage
 - "non_veg": any dish containing meat, chicken, fish, seafood, egg
@@ -70,7 +74,8 @@ export async function parseBillImage(
     },
     body: JSON.stringify({
       model: 'claude-sonnet-5',
-      max_tokens: 2048,
+      max_tokens: 8192,
+      thinking: { type: 'disabled' },
       messages: [
         {
           role: 'user',
@@ -96,7 +101,8 @@ export async function parseBillImage(
   }
 
   const data = await response.json();
-  const text: string = data?.content?.[0]?.text ?? '';
+  const textBlock = (data?.content ?? []).find((block: { type: string }) => block.type === 'text');
+  const text: string = textBlock?.text ?? '';
   const cleaned = text
     .trim()
     .replace(/^```(?:json)?/i, '')
